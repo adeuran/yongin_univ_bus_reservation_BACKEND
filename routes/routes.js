@@ -15,11 +15,9 @@ const routeList = {
 };
 
 // register routers
-const route = {
+module.exports = {
     register(app) {
         for (let address in routeList)
             app.use(address,routeList[address]);
     }
-};
-
-module.exports = route;
+};;
