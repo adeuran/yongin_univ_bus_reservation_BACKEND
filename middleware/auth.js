@@ -10,6 +10,7 @@ module.exports = {
     async checkToken(req, res, next) {
         // read token from header
         let accessToken = new TokenDTO();
+        accessToken.user = new UserDTO();
         accessToken.token =  req.headers['x-access-token'];
         let refreshToken = new TokenDTO();
         refreshToken.token = req.headers['x-refresh-token'];
@@ -51,7 +52,7 @@ module.exports = {
         // access token expired
         else if (!accessToken.token && refreshToken.token) {
             // get user data from token
-            accessToken.user = new UserDTO(decodedRefreshToken.user_id);  // make userDTO object with id
+            accessToken.user.id = decodedRefreshToken.user_id;  // set user id
             try {
                 accessToken.user = await userService.getById(accessToken.user);    // insert all data about user
                 accessToken.token = await tokenManager.issueAccessToken(accessToken.user); // re-issue access token
@@ -77,6 +78,10 @@ module.exports = {
             }
             res.header('refreshToken', refreshToken.token);
         }
+        // 반환할 준비
+        const tokenUser = new UserDTO(decodedAccessToken.user_id, decodedAccessToken.user_identifier, null, decodedAccessToken.user_name);
+        tokenUser.type = decodedAccessToken.user_type;
+        req.user = tokenUser;
         next();
     }
 }
