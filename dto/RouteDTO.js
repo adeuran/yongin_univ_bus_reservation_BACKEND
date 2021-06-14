@@ -2,18 +2,20 @@ const DTO = require('./DTO');
 
 class RouteDTO extends DTO {
     #id;
-    #termState;
+    #termDay;
     #price;
     #keep;
     #explain;
+    #type;
 
-    constructor(id, termState, price, keep = 1, explain) {
+    constructor(id, termDay, price, keep = 1, explain, type) {
         super();
         this.#id = id;
-        this.#termState = termState;
+        this.#termDay = termDay;
         this.#price = price;
         this.#keep = keep;
         this.#explain = explain;
+        this.#type = type;
     }
 
     get id() {
@@ -23,11 +25,11 @@ class RouteDTO extends DTO {
         this.#id = id;
     }
 
-    get termState() {
-        return this.#termState;
+    get termDay() {
+        return this.#termDay;
     }
-    set termState(termState) {
-        this.#termState = termState;
+    set termDay(termDay) {
+        this.#termDay = termDay;
     }
 
     get price() {
@@ -51,13 +53,21 @@ class RouteDTO extends DTO {
         this.#explain = explain;
     }
 
+    get type() {
+        return this.#type;
+    }
+    set type(type) {
+        this.#type = type;
+    }
+
     toJSON() {
         return {
             id: this.id,
-            termState: this.termState,
+            termDay: this.termDay,
             price: this.price,
             keep: this.keep,
             explain: this.explain,
+            type: this.type,
         };
     }
 };

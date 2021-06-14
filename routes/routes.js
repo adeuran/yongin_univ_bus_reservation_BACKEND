@@ -3,6 +3,7 @@ const bankRouter = require('./bank.router');
 const busRouter = require('./bus.router');
 const busTypeRouter = require('./bustype.router');
 const routeRouter = require('./route.router');
+const scheduleRouter = require('./schedule.router');
 const stationRouter = require('./station.router');
 const userRouter = require('./user.router');
 
@@ -12,6 +13,7 @@ const routeList = {
     "/bus": busRouter,
     "/bustype": busTypeRouter,
     "/route": routeRouter,
+    "/schedule": scheduleRouter,
     "/station": stationRouter,
     "/user": userRouter,
 };

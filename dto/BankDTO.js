@@ -4,12 +4,14 @@ class BankDTO extends DTO {
     // variables
     #id;
     #name;
+    #priority;
 
     // constructor
-    constructor(id, name) {
+    constructor(id, name, priority) {
         super();
         this.#id = id;
         this.#name = name;
+        this.#priority = priority;
     }
     
     // getter and setter
@@ -27,10 +29,18 @@ class BankDTO extends DTO {
         this.#name = name;
     }
 
+    get priority() {
+        return this.#priority;
+    }
+    set priority(priority) {
+        this.#priority = priority;
+    }
+
     toJSON() {
         return {
             id: this.id,
-            name: this.name
+            name: this.name,
+            priority: this.priority,
         }
     }
 }

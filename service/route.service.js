@@ -26,10 +26,11 @@ module.exports = {
         return new Promise(
             async (resolve, reject) => {
                 try {
-                    resolve();
+                    await routeDAO.insert(route)
                 } catch (error) {
                     reject(error);
                 }
+                resolve();
             }
         );
     },
