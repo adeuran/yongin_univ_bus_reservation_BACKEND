@@ -17,7 +17,7 @@ class UserDTO extends DTO {
     //constructor
     constructor(id, identifier, password, name,
         email, phone, type="normal", point=0, penalty,
-        banned, state = 'active', account) {
+        banned, state = 'active') {
         super();
         this.#id = id;
         this.#identifier = identifier;

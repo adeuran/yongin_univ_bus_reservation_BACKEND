@@ -1,4 +1,7 @@
-export default class ReservationDTO {
+const DTO = require("./DTO");
+const UserDTO = require("../dto/UserDTO");
+const ScheduleDTO = require("../dto/ScheduleDTO");
+class ReservationDTO extends DTO{
     #id;
     #schedule;
     #user;
@@ -7,8 +10,9 @@ export default class ReservationDTO {
     #board;
     #cancelTime;
 
-    constructor(id, schedule, user, time, seat,
-        board=0, cancelTime) {
+    constructor(id, schedule = new ScheduleDTO(), user = new UserDTO(), time, seat,
+        board = 0, cancelTime) {
+        super();
         this.#id = id;
         this.#schedule = schedule;
         this.#user = user;
@@ -66,4 +70,18 @@ export default class ReservationDTO {
     set cancelTime(cancelTime) {
         this.#cancelTime = cancelTime;
     }
+
+    toJSON() {
+        return {
+            id: this.id,
+            schedule: this.schedule,
+            user: this.user,
+            time: this.time,
+            seat: this.seat,
+            board: this.board,
+            cancelTime: this.cancelTime,
+        };
+    }
 };
+
+module.exports = ReservationDTO;

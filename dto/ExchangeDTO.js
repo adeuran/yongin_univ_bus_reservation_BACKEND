@@ -1,4 +1,8 @@
-export default class ExchangeDTO {
+const DTO = require("./DTO");
+const AccountDTO = require("../dto/AccountDTO");
+const UserDTO = require("../dto/UserDTO");
+
+class ExchangeDTO extends DTO{
     #id;
     #account;
     #user;
@@ -7,7 +11,8 @@ export default class ExchangeDTO {
     #type;
     #state;
 
-    constructor(id, account, user, time, price, type, state) {
+    constructor(id, account = new AccountDTO(), user = new UserDTO(), time, price, type, state) {
+        super();
         this.#id = id;
         this.#account = account;
         this.#user = user;
@@ -65,4 +70,18 @@ export default class ExchangeDTO {
     set state(state) {
         this.#state = state;
     }
+
+    toJSON() {
+        return {
+            id: this.id,
+            account: this.account,
+            user: this.user,
+            time: this.time,
+            price: this.price,
+            type: this.type,
+            state: this.state,
+        };
+    }
 };
+
+module.exports = ExchangeDTO;

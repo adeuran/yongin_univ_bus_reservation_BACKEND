@@ -1,16 +1,19 @@
-export default class RouteDTO {
+const DTO = require('./DTO');
+
+class RouteDTO extends DTO {
     #id;
     #termState;
-    #transit;
     #price;
     #keep;
+    #explain;
 
-    constructor(id, termState, transit, price, keep=1) {
+    constructor(id, termState, price, keep = 1, explain) {
+        super();
         this.#id = id;
         this.#termState = termState;
-        this.#transit = transit;
         this.#price = price;
         this.#keep = keep;
+        this.#explain = explain;
     }
 
     get id() {
@@ -27,13 +30,6 @@ export default class RouteDTO {
         this.#termState = termState;
     }
 
-    get transit() {
-        return this.#transit;
-    }
-    set transit(transit) {
-        this.#transit = transit;
-    }
-
     get price() {
         return this.#price;
     }
@@ -47,4 +43,23 @@ export default class RouteDTO {
     set keep(keep) {
         this.#keep = keep;
     }
+
+    get explain() {
+        return this.#explain;
+    }
+    set explain(explain) {
+        this.#explain = explain;
+    }
+
+    toJSON() {
+        return {
+            id: this.id,
+            termState: this.termState,
+            price: this.price,
+            keep: this.keep,
+            explain: this.explain,
+        };
+    }
 };
+
+module.exports = RouteDTO;

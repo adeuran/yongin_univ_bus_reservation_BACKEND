@@ -1,5 +1,5 @@
 const DTO = require('./DTO');
-
+const UserDTO = require('../dto/UserDTO');
 class TokenDTO extends DTO {
     // variables
     #id;
@@ -8,7 +8,7 @@ class TokenDTO extends DTO {
     #issued;
 
     //constructor
-    constructor(id, user, token, issued) {
+    constructor(id, user = new UserDTO(), token, issued) {
         super();
         this.#id = id;
         this.#user = user;

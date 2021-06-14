@@ -1,4 +1,5 @@
 const DTO = require('./DTO');
+const BusTypeDTO = require('../dto/BusTypeDTO');
 
 class BusDTO extends DTO {
     // variables
@@ -8,7 +9,7 @@ class BusDTO extends DTO {
     #busType;
 
     // constructor
-    constructor(id, plate, state, busType) {
+    constructor(id, plate, state, busType = new BusTypeDTO()) {
         super();
         this.#id = id;
         this.#plate = plate;

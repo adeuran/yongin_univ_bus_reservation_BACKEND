@@ -1,11 +1,15 @@
-export default class ScheduleDTO {
+const DTO = require("./DTO");
+const RouteDTO = require("../dto/RouteDTO");
+const BusType = require("../dto/BusTypeDTO");
+class ScheduleDTO extends DTO {
     #id;
     #date;
     #bus;
     #route;
     #state;
 
-    constructor(id, date, bus, route, state=1) {
+    constructor(id, date, bus = new BusType(), route = new RouteDTO(), state = 1) {
+        super();
         this.#id = id;
         this.#date = date;
         this.#bus = bus;
@@ -47,4 +51,16 @@ export default class ScheduleDTO {
     set state(state) {
         this.#state = state;
     }
+
+    toJSON() {
+        return {
+            id: this.id,
+            date: this.date,
+            bus: this.bus,
+            route: this.route,
+            state: this.state,
+        };
+    }
 };
+
+module.exports = ScheduleDTO;
