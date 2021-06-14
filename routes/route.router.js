@@ -13,7 +13,7 @@ router.post('/insert', authenticator, routeController.insert);
 
 router.post('/editbyid', authenticator, routeController.editById);
 
-router.post('/delbyid/:id', authenticator, routeController.deleteById);
+router.get('/delbyid/:id', authenticator, routeController.deleteById);
 
 router.get('/swkeepbyid/:id', authenticator, routeController.switchKeepById);
 
@@ -24,6 +24,6 @@ router.post('/transit/insert', authenticator, routeController.insert);
 
 router.post('/transit/editbyid', authenticator, routeController.editById);
 
-router.post('/transit/delbyid/:id', authenticator, routeController.deleteTransitById);
+router.get('/transit/delbyid/:id', authenticator, routeController.deleteTransitById);
 
 module.exports = router;
