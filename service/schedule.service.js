@@ -13,7 +13,7 @@ module.exports = {
             }
         })    
     },
-    getbyId(schedule) {
+    getById(schedule) {
         return new Promise(
             async (resolve, reject) => {
                 try {
@@ -24,7 +24,7 @@ module.exports = {
             }
         );
     },
-    getbyDetail(schedule) {
+    getByDetail(schedule) {
         return new Promise(
             async (resolve, reject) => {
                 try {
