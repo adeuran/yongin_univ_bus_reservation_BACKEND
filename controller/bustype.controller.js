@@ -2,7 +2,7 @@ const BusTypeDTO = require('../dto/BusTypeDTO');
 const busTypeService = require('../service/bustype.service');
 
 
-const busTypeController = {
+module.exports = {
     // 모든 버스타입 조회
     async getAll(req, res, next) {
         let result = await busTypeService.getAll();
@@ -15,5 +15,3 @@ const busTypeController = {
         res.jsonp(result);
     }
 }
-
-module.exports = busTypeController;

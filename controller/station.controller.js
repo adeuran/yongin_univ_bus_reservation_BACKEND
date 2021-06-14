@@ -1,7 +1,7 @@
 const StationDTO = require('../dto/StationDTO');
 const stationService = require('../service/station.service');
 
-const stationController = {
+module.exports = {
     // 모든 정류장의 종류만 출력
     async getAll(req, res, next) {
         let result = await stationService.getAll();
@@ -26,5 +26,3 @@ const stationController = {
         res.jsonp(result);
     },
 }
-
-module.exports = stationController;

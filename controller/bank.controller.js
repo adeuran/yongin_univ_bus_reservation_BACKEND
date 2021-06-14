@@ -2,7 +2,7 @@ const BankDTO = require('../dto/BankDTO');
 const bankService = require('../service/bank.service');
 
 
-const bankController = {
+module.exports = {
     // 모든 은행의 ID와 Name 출력
     async getAll(req, res, next) {
         let result = await bankService.getAll();
@@ -15,5 +15,3 @@ const bankController = {
         res.jsonp(result);
     }
 }
-
-module.exports = bankController;

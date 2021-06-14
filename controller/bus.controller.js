@@ -2,7 +2,7 @@ const BusDTO = require('../dto/BusDTO');
 const BusTypeDTO = require('../dto/BusTypeDTO');
 const busService = require('../service/bus.service');
 
-const busController = {
+module.exports = {
     // 모든 버스의 ID와 Name 출력
     async getAll(req, res, next) {
         let result = await busService.getAll();
@@ -29,5 +29,3 @@ const busController = {
         res.jsonp(result);
     },
 }
-
-module.exports = busController;
