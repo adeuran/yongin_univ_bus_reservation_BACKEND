@@ -56,4 +56,31 @@ module.exports = {
         );
         
     },
+    async addPointById(user, price) {
+        return new Promise(
+            async (resolve, reject) => {
+                try {
+                    user = await this.getById(user);
+                    resolve(await tokenService.addPointById(user, price));
+                } catch (error) {
+                    reject(error);
+                }
+            }
+        );
+        
+    },
+    async minusPointById(user, price) {
+        return new Promise(
+            async (resolve, reject) => {
+                try {
+                    user = await this.getById(user);
+                    if (user.point - price < 0) reject("Not enough point");
+                    else resolve(await tokenService.minusPointById(user, price));
+                } catch (error) {
+                    reject(error);
+                }
+            }
+        );
+        
+    },
 };

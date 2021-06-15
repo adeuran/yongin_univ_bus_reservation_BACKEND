@@ -68,5 +68,25 @@ module.exports = {
         user.state = response[0][0].user_state;
 
         return user;
+    },
+    async addPointById(user, price) {
+        let response;
+        try {
+            const sql = `UPDATE user SET user_point = user_point + ${price} WHERE user_id = ${user.id}`;
+            response = await DAO.sqlHandler(sql);
+        } catch (err) {
+            throw new Error(err);
+        }
+        return response;
+    },
+    async minusPointById(user, price) {
+        let response;
+        try {
+            const sql = `UPDATE user SET user_point = user_point - ${price} WHERE user_id = ${user.id}`;
+            response = await DAO.sqlHandler(sql);
+        } catch (err) {
+            throw new Error(err);
+        }
+        return response;
     }
 };
