@@ -3,7 +3,7 @@ const router = express.Router();
 // load middleware
 const authenticator = require('../middleware/auth').checkToken;
 // load controller
-const reservationController = require('../controller/bustype.controller');
+const reservationController = require('../controller/reservation.controller');
 
 router.get('/getall/', authenticator, reservationController.getAll);
 router.get('/getbyid/:id', authenticator, reservationController.getById);

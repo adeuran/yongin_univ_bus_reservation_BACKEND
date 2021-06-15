@@ -2,9 +2,9 @@ const DAO = require('./DAO');
 const ScheduleDTO = require('../dto/ScheduleDTO');
 
 module.exports = {
-    async getAll() {
+    getAll() {
         let response;
-        return new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             const sql = `SELECT s.schedule_id, s.schedule_date, s.bus_id, s.route_id, s.schedule_state, 
             b.bus_plate, b.bus_state, bt.bustype_capacity, bt.bustype_title FROM schedule AS s 
             LEFT JOIN bus AS b ON b.bus_id = s.bus_id 
@@ -32,9 +32,9 @@ module.exports = {
             resolve(result);
         });
     },
-    async getById(schedule) {
+    getById(schedule) {
         let response;
-        return new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             const sql = `SELECT s.schedule_id, s.schedule_date, s.bus_id, s.route_id, s.schedule_state, 
             b.bus_plate, b.bus_state, bt.bustype_capacity, bt.bustype_title FROM schedule AS s 
             LEFT JOIN bus AS b ON b.bus_id = s.bus_id 
@@ -59,8 +59,8 @@ module.exports = {
             resolve(schedule);
         });
     },
-    async insert(schedule) {
-        return new Promise((resolve, reject) => {
+    insert(schedule) {
+        return new Promise(async (resolve, reject) => {
             const sql = `INSERT INTO schedule (schedule_date, bus_id, route_id) 
             VALUE (${schedule.date},${schedule.bus.id},${schedule.route.id})`;
             try {
@@ -71,9 +71,9 @@ module.exports = {
             resolve();
         });
     },
-    async insertUsingRoute(scheduleArray) {
+    insertUsingRoute(scheduleArray) {
         return new Promise((resolve, reject) => {
-            scheduleArray.forEach((schedule) => {
+            scheduleArray.forEach(async (schedule) => {
                 const sql = `INSERT INTO schedule (schedule_date, bus_id, route_id) 
                 VALUE (${schedule.date},${schedule.bus.id},${schedule.route.id})`;
             
@@ -86,8 +86,8 @@ module.exports = {
             resolve();
         });
     },
-    async editById(schedule) {
-        return new Promise((resolve, reject) => {
+    editById(schedule) {
+        return new Promise(async (resolve, reject) => {
             let response;
             try {
                 const sql = `UPDATE schedule SET schedule_date = ${schedule.date}, bus_id = ${schedule.bus.id} WHERE schedule_id = ${schedule.id}`;
@@ -98,8 +98,8 @@ module.exports = {
             resolve();
         });
     },
-    async switchStateById(schedule) {
-        return new Promise((resolve, reject) => {
+    switchStateById(schedule) {
+        return new Promise(async (resolve, reject) => {
             let response;
             try {
                 const sql = `UPDATE schedule SET schedule_state = CASE WHEN schedule_state = 0 THEN 1 ELSE 0 WHERE schedule_id =${schedule.id}`;

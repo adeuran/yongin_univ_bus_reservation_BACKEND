@@ -62,7 +62,7 @@ module.exports = {
         }
         res.jsonp({ message: "success" });
     },
-    async switchKeppById(req, res, next) {
+    async switchKeepById(req, res, next) {
          const route = new RouteDTO(Number(req.params.id));
         try {
             await routeService.switchKeepById(route);
@@ -108,10 +108,10 @@ module.exports = {
         }
         res.jsonp({ message: "success" });
     },
-    async deleteById(req, res, next) {
+    async deleteTransitById(req, res, next) {
         const transit = new RouteTransitDTO(Number(req.params.id));
         try {
-            await routeTransitService.deleteById(transit);
+            await routeTransitService.deleteTransitById(transit);
         } catch (error) {
             next(error);
         }

@@ -2,9 +2,9 @@ const DAO = require('./DAO');
 const RouteTransitDTO = require('../dto/RouteTransitDTO');
 
 module.exports = {
-    async getByRouteId(transit) {
+    getByRouteId(transit) {
         let response;
-        return new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             const sql = `SELECT rt.transit_id, rt.station_id, rt.transit_time, s.station_name, s.station_explain, 
             s.station_position, s.station_image FROM route_transit AS rt LEFT JOIN station AS s ON rt.station_id = s.station_id
             WHERE route_id = ${transit.route.id}`;
@@ -28,8 +28,8 @@ module.exports = {
             resolve(result);
         });
     },
-    async insert(transit) {
-        return new Promise((resolve, reject) => {
+    insert(transit) {
+        return new Promise(async (resolve, reject) => {
             const sql = `INSERT INTO route_transit (route_id, station_id, transit_time) 
             VALUE (${transit.route.id}, ${transit.station.id}, '${transit.time}')`;
             try {
@@ -40,8 +40,8 @@ module.exports = {
             resolve();
         });
     },
-    async editById(transit) {
-        return new Promise((resolve, reject) => {
+    editById(transit) {
+        return new Promise(async (resolve, reject) => {
             let response;
             try {
                 const sql = `UPDATE route_transit SET station_id = ${transit.station.id}, transit_time = '${transit.time}' 
@@ -53,8 +53,8 @@ module.exports = {
             resolve();
         });
     },
-    async deleteById(transit) {
-        return new Promise((resolve, reject) => {
+    deleteById(transit) {
+        return new Promise(async (resolve, reject) => {
             let response;
         try {
             const sql = `DELETE FROM route_transit WHERE transit_id=${transit.id}`;

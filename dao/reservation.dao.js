@@ -2,9 +2,9 @@ const DAO = require('./DAO');
 const ReservationDTO = require('../dto/ReservationDTO');
 
 module.exports = {
-    async getAll() {
+    getAll() {
         let response;
-        return new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             const sql = `SELECT r.reservation_id, r.user_id, r.reservation_time, r.reservation_seat, r.reservation_board, r.reservation_canceltime, s.schedule_id, s.schedule_date,
                 b.bus_plate, ro.route_price, ro.route_explain, ro.route_type
                 FROM reservation AS r
@@ -39,9 +39,9 @@ module.exports = {
             resolve(result);
         });
     },
-    async getById(reservation) {
+    getById(reservation) {
         let response;
-        return new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             const sql = `SELECT r.reservation_time, r.user_id, r.reservation_seat, r.reservation_board, r.reservation_canceltime, s.schedule_id,
              s.schedule_date, b.bus_id, b.bus_plate, ro.route_id, ro.route_price, ro.route_explain, ro.route_type FROM reservation AS r
              LEFT JOIN schedule AS s ON r.schedule_id = s.schedule_id LEFT JOIN bus AS b ON b.bus_id = s.bus_id
@@ -71,9 +71,9 @@ module.exports = {
             resolve(schedule);
         });
     },
-    async getByUserId(reservation) {
+    getByUserId(reservation) {
         let response;
-        return new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             const sql = `SELECT r.reservation_id, r.reservation_time, r.reservation_seat, r.reservation_board, r.reservation_canceltime, s.schedule_id, s.schedule_date,
                 b.bus_plate, ro.route_price, ro.route_explain, ro.route_type
                 FROM reservation AS r
@@ -104,8 +104,8 @@ module.exports = {
             resolve(schedule);
         });
     },
-    async insert(reservation) {
-        return new Promise((resolve, reject) => {
+    insert(reservation) {
+        return new Promise(async (resolve, reject) => {
             const sql = `INSERT INTO reservation (schedule_id, user_id, reservation_time, reservation_seat) 
             VALUE (${reservation.schedule.id},${reservation.user.id},${reservation.time},${reservation.seat})`;
             try {
@@ -116,8 +116,8 @@ module.exports = {
             resolve();
         });
     },
-    async cancel(reservation) {
-        return new Promise((resolve, reject) => {
+    cancel(reservation) {
+        return new Promise(async (resolve, reject) => {
             let response;
             try {
                 const sql = `UPDATE reservation SET reservation_canceltime = NOW() WHERE reservation_id = ${reservation.id}`;
@@ -128,8 +128,8 @@ module.exports = {
             resolve();
         });
     },
-    async board(reservation) {
-        return new Promise((resolve, reject) => {
+    board(reservation) {
+        return new Promise(async (resolve, reject) => {
             let response;
             try {
                 const sql = `UPDATE reservation SET reservation_board = 1, WHERE reservation_id = ${reservation.id}`;
@@ -140,8 +140,8 @@ module.exports = {
             resolve();
         });
     },
-    async forceCancel(reservation) {
-        return new Promise((resolve, reject) => {
+    forceCancel(reservation) {
+        return new Promise(async (resolve, reject) => {
             let response;
             try {
                 const sql = `UPDATE reservation SET reservation_canceltime = NOW() WHERE reservation_id = ${reservation.id}`;
@@ -153,7 +153,7 @@ module.exports = {
         });
     },
     async unboard(reservation) {
-        return new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             let response;
             try {
                 const sql = `UPDATE reservation SET reservation_board = 0 WHERE reservation_id = ${reservation.id}`;

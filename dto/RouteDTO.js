@@ -36,7 +36,7 @@ class RouteDTO extends DTO {
         return this.#price;
     }
     set price(price) {
-        this.#transit = transit;
+        this.#price = price;
     }
 
     get keep() {

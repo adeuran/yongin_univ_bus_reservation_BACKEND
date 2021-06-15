@@ -2,9 +2,9 @@ const DAO = require('./DAO');
 const RouteDTO = require('../dto/RouteDTO');
 
 module.exports = {
-    async getAll() {
+    getAll() {
         let response;
-        return new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             const sql = `SELECT route_id, route_term_day, route_price, route_keep, route_explain FROM route`;
             try {
                 response = await DAO.sqlHandler(sql);
@@ -24,9 +24,9 @@ module.exports = {
             resolve(result);
         });
     },
-    async getById(route) {
+    getById(route) {
         let response;
-        return new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             const sql = `SELECT route_term_day, route_price, route_keep, route_explain FROM route WHERE route_id = ${route.id} LIMIT 1`;
             try {
             response = await DAO.sqlHandler(sql);
@@ -43,8 +43,8 @@ module.exports = {
             resolve(route);
         });
     },
-    async insert(route) {
-        return new Promise((resolve, reject) => {
+    insert(route) {
+        return new Promise(async (resolve, reject) => {
             const sql = `INSERT INTO route (route_term_day, route_price, route_keep, route_explain)
              VALUE ('${route.termDay.binaryDays}', ${route.price}, ${route.keep}, '${route.explain}')`;
             try {
@@ -55,8 +55,8 @@ module.exports = {
             resolve();
         });
     },
-    async editById(route) {
-        return new Promise((resolve, reject) => {
+    editById(route) {
+        return new Promise(async (resolve, reject) => {
             let response;
             try {
                 const sql = `UPDATE route SET route_term_day='${route.termDay.binaryDays}', route_price=${route.price}, route_keep=${route.keep},
@@ -68,8 +68,8 @@ module.exports = {
             resolve();
         });
     },
-    async deleteById(route) {
-        return new Promise((resolve, reject) => {
+    deleteById(route) {
+        return new Promise(async (resolve, reject) => {
             let response;
         try {
             const sql = `DELETE FROM route WHERE route_id=${route.id}`;
@@ -80,8 +80,8 @@ module.exports = {
         resolve();
         });
     },
-    async switchKeepById(route) {
-        return new Promise((resolve, reject) => {
+    switchKeepById(route) {
+        return new Promise(async (resolve, reject) => {
             let response;
             try {
                 const sql = `UPDATE route SET route_keep = CASE WHEN route_keep = 1 THEN 0 ELSE 1 WHERE route_id=${route.id}`;
