@@ -5,15 +5,7 @@ class DaysVO {
         this.#binaryDays = binaryDays;
     }
     checker() {
-        return {
-            0: this.isSunday,
-            1: this.isMonday,
-            2: this.isTuesday,
-            3: this.isWednesday,
-            4: this.isThursday,
-            5: this.isFriday,
-            6: this.isSaturday,
-        };
+        return [this.isSunday, this.isMonday, this.isTuesday, this.isWednesday, this.isThursday, this.isFriday, this.isSaturday];
     }
     isSunday() {
         if (this.binaryDays & 128 == 128) return true;
@@ -72,30 +64,32 @@ class DaysVO {
         return this.binaryDay | 1;
     }
     unsetSunday() {
-        return this.binaryDay | 127;
+        return this.binaryDay & 127;
     }
     unsetMonday() {
-        return this.binaryDay | 191;
+        return this.binaryDay & 191;
     }
     unsetTuesDay() {
-        return this.binaryDay | 223;
+        return this.binaryDay & 223;
     }
     unsetWednesday() {
-        return this.binaryDay | 239;
+        return this.binaryDay & 239;
     }
     unsetThursday() {
-        return this.binaryDay | 247;
+        return this.binaryDay & 247;
     }
     unsetFriday() {
-        return this.binaryDay | 251;
+        return this.binaryDay & 251;
     }
     unsetSaturday() {
-        return this.binaryDay | 253;
+        return this.binaryDay & 253;
     }
     unsetOption() {
-        return this.binaryDay | 254;
+        return this.binaryDay & 254;
     }
     get binaryDays() {
         return this.#binaryDays;
     }
 }
+
+module.exports = DaysVO;
