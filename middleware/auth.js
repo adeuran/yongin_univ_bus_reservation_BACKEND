@@ -10,17 +10,17 @@ module.exports = {
     async checkToken(req, res, next) {
         // read token from header
         let accessToken = new TokenDTO();
-        accessToken.user = new UserDTO();
-        accessToken.token =  req.headers['x-access-token'];
+        accessToken.token = req.headers['x-access-token'];
         let refreshToken = new TokenDTO();
         refreshToken.token = req.headers['x-refresh-token'];
-
         let decodedAccessToken, decodedRefreshToken;
         
         // 토큰 유효상태 확인
         if (accessToken.token) {
             try {
-                decodedAccessToken = await tokenManager.verifyAccessToken(accessToken.token);
+                decodedAccessToken = await tokenManager.verifyAccessToken(accessToken);
+                
+                
             } catch (error) {
                 accessToken.token = null;
             }
