@@ -1,10 +1,12 @@
-const createError = require('http-errors');
 const tokenManager = require('../util/tokenManager');
 const tokenService = require('../service/token.service');
 const userService = require('../service/user.service');
 const UserDTO = require('../dto/UserDTO');
 const { issueRefreshToken } = require('../util/tokenManager');
 const TokenDTO = require('../dto/TokenDTO');
+const errorToServer = require("@/util/errorToServer.js")
+
+const POSITION = "middleware/auth"
 
 module.exports = {
     async checkToken(req, res, next) {
@@ -15,54 +17,68 @@ module.exports = {
         refreshToken.token = req.headers['x-refresh-token'];
         let decodedAccessToken, decodedRefreshToken;
         
-        // 토큰 유효상태 확인
+        // Access 토큰 유효상태 확인
         if (accessToken.token) {
             try {
                 decodedAccessToken = await tokenManager.verifyAccessToken(accessToken);
-                
-                
             } catch (error) {
-                accessToken.token = null;
+                const message = "Access Token Decoding Failed";
+                errorToServer.error(error, message, POSITION, 1);    // show error message to console
+                accessToken.token = null;   // 토큰이 이상하면 없는 것으로 취급
+                
             }
         }
-        
-        if (refreshToken.token) {
+        if (refreshToken.token) {   // Refresh Token이 존재할 경우
             try {
                 decodedRefreshToken = await tokenManager.verifyRefreshToken(refreshToken); // 토큰의 유효성 확인
-                // 유효한 토큰이면 사용이 정지된 토큰인지 확인
-                const tokenObj = await tokenService.getIdByToken(refreshToken);
-                if (!tokenObj) {
-                    // 정지된 토큰이면 무효화
+            } catch (error) {   // 토큰 유효성을 통과하지 못하거나 DB에 접속할 수 없으면
+                const message = "Refresh Token Decoding Failed";
+                errorToServer.error(error, message, POSITION, 1);    // show error message to console
+                refreshToken.token = null;  // 토큰을 없는 것으로 취급
+            }
+
+            try {
+                const tokenObj = await tokenService.getIdByToken(refreshToken); // 유효한 토큰이면 DB에서 사용이 정지된 토큰인지 확인
+                if (!tokenObj) {// DB에서 정지된 토큰이면 인증 거부
+                    const message = "Banned Refresh Token From Database";
+                    errorToServer.error(error, message, POSITION, 1);    // show error message to console
                     refreshToken.token = null;   
                     accessToken.token = null;
-                } else {
+                } else {    // 유효한 토큰이면 DB의 내용으로 RefreshToken 데이터 갱신
                     refreshToken= tokenObj
                 }
-            } catch (error) {
-                refreshToken.token = null;
-                console.log(error)
+            } catch (error) {   // DB 처리과정 중 오류 발생시
+                const message = "Database Error Occurrence";
+                errorToServer.error(error, message, POSITION, 3);    // show error message to console
+                refreshToken.token = null;  // 토큰을 없는 것으로 취급
             }
         }
-        // token does not exist
+        // when token does not exist
         if (!(accessToken.token || refreshToken.token)) {
-            // unauthorized user
-            res.status(401);
-            next(new createError.Unauthorized());
+            // throw http 401 error
+            res.sendStatus(401);
         }
-        // access token expired
+        // when access token expired and has verified refresh token
         else if (!accessToken.token && refreshToken.token) {
             // get user data from token
-            accessToken.user.id = decodedRefreshToken.user_id;  // set user id
+            accessToken.user.id = decodedRefreshToken.user_id;  // set user id using refresh token
             try {
-                accessToken.user = await userService.getById(accessToken.user);    // insert all data about user
+                accessToken.user = await userService.getById(accessToken.user);    // get user data from db
+            } catch (error) {
+                // Server Error Occurrence
+                const message = "Database Error Occurrence";
+                errorToServer.error(error, message, POSITION, 3);    // show error message to console
+                res.sendStatus(500);
+            }
+            try {
                 accessToken.token = await tokenManager.issueAccessToken(accessToken.user); // re-issue access token
             } catch (error) {
-                res.status(500);
-                next(error);
-                console.log(error);
+                // Server Error Occurrence
+                const message = "Access Token Issue Failed";
+                errorToServer.error(error, message, POSITION, 3);    // show error message to console
+                res.sendStatus(500);
             }
-            res.header('accessToken', accessToken.token);
-
+            res.header('accessToken', accessToken.token);   // 갱신된 access token을 헤더에 함께 보내줌
         }
         // refreshToken이 만료 이주전이면 갱신/재발급
         else if (decodedRefreshToken.exp - Date.now()/1000<60*60*24*15) {
@@ -72,16 +88,18 @@ module.exports = {
                 refreshToken.token = await issueRefreshToken(refreshToken.user);   // re-issue refresh token
                 await tokenService.insert(refreshToken); // register new refreshToken
             } catch (error) {
-                res.status(500);
-                next(error);
-                console.log(error);
+                // Server Error Occurrence
+                const message = "Error Occurrence When Refresh Token Re-Issue";
+                errorToServer.error(error, message, POSITION, 3);    // show error message to console
+                res.sendStatus(500);
             }
-            res.header('refreshToken', refreshToken.token);
+            res.header('refreshToken', refreshToken.token); // 갱신된 refresh token을 헤더에 함께 보내줌
         }
-        // 반환할 준비
-        const tokenUser = new UserDTO(decodedAccessToken.user_id, decodedAccessToken.user_identifier, null, decodedAccessToken.user_name);
-        tokenUser.type = decodedAccessToken.user_type;
-        req.user = tokenUser;
-        next();
+        // 모든 작업이 정상적으로 이뤄졌다면 토큰 객체 생성 및 설정
+        const userObj = new UserDTO(decodedAccessToken.user_id, decodedAccessToken.user_identifier, null, decodedAccessToken.user_name);
+        userObj.type = decodedAccessToken.user_type;
+
+        req.user = userObj; // 토큰에서 얻은 사용자 정보를 req에 실어 보냄.
+        next(); // 미들웨어 통과
     }
 }
