@@ -2,20 +2,24 @@ const DAO = require('./DAO');
 const StationDTO = require('../dto/StationDTO');
 
 const stationDAO = {
-    async getAll() {
+    getAll() {    // get all station list
         let response;
-        try {
-            const sql = `SELECT station_id, station_name FROM station`;
-            response = await DAO.sqlHandler(sql);
-        } catch (err) {
-            throw err;
-        }
-        const result = new Array();
-        response[0].forEach((tuple) => {
-            const dto = new StationDTO(tuple.station_id, tuple.station_name);
-            result.push(dto);
+        return new Promise(async (resolve, reject) => {
+            try {
+                const sql = `SELECT station_id, station_name, station_explain FROM station`;
+                response = await DAO.sqlHandler(sql);
+            } catch (error) {
+                reject(error);
+            }
+
+            const result = new Array();
+            response[0].forEach((tuple) => {
+                const dto = new StationDTO(tuple.station_id, tuple.station_name, tuple.station_explain);
+                result.push(dto);
+            });
+
+            resolve(result);
         });
-        return result;
     },
     async getAllWithDetail() {
         let response;

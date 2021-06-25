@@ -2,10 +2,10 @@ const StationDTO = require('../dto/StationDTO');
 const stationService = require('../service/station.service');
 
 module.exports = {
-    // 모든 정류장의 종류만 출력
+    // 모든 정류장의 종류 출력
     async getAll(req, res, next) {
         let result = await stationService.getAll();
-        res.jsonp(result);
+        res.json(result);
     },
     // 모든 정류장의 세부내용까지 출력
     async getAllWithDetail(req, res, next) {
