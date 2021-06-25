@@ -4,8 +4,7 @@ const userService = require('../service/user.service');
 const UserDTO = require('../dto/UserDTO');
 const { issueRefreshToken } = require('../util/tokenManager');
 const TokenDTO = require('../dto/TokenDTO');
-const errorToServer = require("@/util/errorToServer.js")
-
+const errorLogger = require("../util/errorLogger")
 const POSITION = "middleware/auth"
 
 module.exports = {
@@ -23,7 +22,7 @@ module.exports = {
                 decodedAccessToken = await tokenManager.verifyAccessToken(accessToken);
             } catch (error) {
                 const message = "Access Token Decoding Failed";
-                errorToServer.error(error, message, POSITION, 1);    // show error message to console
+                errorLogger.error(error, message, POSITION, 1);    // show error message to console
                 accessToken.token = null;   // 토큰이 이상하면 없는 것으로 취급
                 
             }
@@ -33,15 +32,15 @@ module.exports = {
                 decodedRefreshToken = await tokenManager.verifyRefreshToken(refreshToken); // 토큰의 유효성 확인
             } catch (error) {   // 토큰 유효성을 통과하지 못하거나 DB에 접속할 수 없으면
                 const message = "Refresh Token Decoding Failed";
-                errorToServer.error(error, message, POSITION, 1);    // show error message to console
+                errorLogger.error(error, message, POSITION, 1);    // show error message to console
                 refreshToken.token = null;  // 토큰을 없는 것으로 취급
             }
 
             try {
                 const tokenObj = await tokenService.getIdByToken(refreshToken); // 유효한 토큰이면 DB에서 사용이 정지된 토큰인지 확인
                 if (!tokenObj) {// DB에서 정지된 토큰이면 인증 거부
-                    const message = "Banned Refresh Token From Database";
-                    errorToServer.error(error, message, POSITION, 1);    // show error message to console
+                    const message = "Banned Refresh Token";
+                    errorLogger.error(error, message, POSITION, 1);    // show error message to console
                     refreshToken.token = null;   
                     accessToken.token = null;
                 } else {    // 유효한 토큰이면 DB의 내용으로 RefreshToken 데이터 갱신
@@ -49,7 +48,7 @@ module.exports = {
                 }
             } catch (error) {   // DB 처리과정 중 오류 발생시
                 const message = "Database Error Occurrence";
-                errorToServer.error(error, message, POSITION, 3);    // show error message to console
+                errorLogger.error(error, message, POSITION, 3);    // show error message to console
                 refreshToken.token = null;  // 토큰을 없는 것으로 취급
             }
         }
@@ -67,7 +66,7 @@ module.exports = {
             } catch (error) {
                 // Server Error Occurrence
                 const message = "Database Error Occurrence";
-                errorToServer.error(error, message, POSITION, 3);    // show error message to console
+                errorLogger.error(error, message, POSITION, 3);    // show error message to console
                 res.sendStatus(500);
             }
             try {
@@ -75,7 +74,7 @@ module.exports = {
             } catch (error) {
                 // Server Error Occurrence
                 const message = "Access Token Issue Failed";
-                errorToServer.error(error, message, POSITION, 3);    // show error message to console
+                errorLogger.error(error, message, POSITION, 3);    // show error message to console
                 res.sendStatus(500);
             }
             res.header('accessToken', accessToken.token);   // 갱신된 access token을 헤더에 함께 보내줌
@@ -90,7 +89,7 @@ module.exports = {
             } catch (error) {
                 // Server Error Occurrence
                 const message = "Error Occurrence When Refresh Token Re-Issue";
-                errorToServer.error(error, message, POSITION, 3);    // show error message to console
+                errorLogger.error(error, message, POSITION, 3);    // show error message to console
                 res.sendStatus(500);
             }
             res.header('refreshToken', refreshToken.token); // 갱신된 refresh token을 헤더에 함께 보내줌
